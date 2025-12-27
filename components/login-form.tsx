@@ -1,110 +1,177 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { z } from "zod";
+import { Google } from "./icons/google";
+import { GitHub } from "./icons/github";
+import { Mail } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+const loginSchema = z.object({
+  email: z.string().email("Ingresa un correo válido."),
+  password: z
+    .string()
+    .min(6, "La contraseña debe tener al menos 6 caracteres.")
+    .max(64, "La contraseña es demasiado larga."),
+});
+
+type LoginErrors = Partial<Record<keyof z.infer<typeof loginSchema>, string>>;
+
+export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<LoginErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const supabase = createClient();
     setIsLoading(true);
     setError(null);
+    setFieldErrors({});
 
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
-      // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push("/protected");
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
-    } finally {
+    const validation = loginSchema.safeParse({ email, password });
+    if (!validation.success) {
+      const formatted: LoginErrors = {};
+      for (const issue of validation.error.issues) {
+        const key = issue.path[0] as keyof LoginErrors;
+        formatted[key] = issue.message;
+      }
+      setFieldErrors(formatted);
       setIsLoading(false);
+      return;
     }
+
+    const supabase = createClient();
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      setError("Credenciales incorrectas. Verifica tu correo y contraseña.");
+      setIsLoading(false);
+      return;
+    }
+
+    router.refresh();
+    router.push("/");
+  };
+
+  const handleOAuthLogin = async (provider: "google" | "github") => {
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
-              </Button>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/auth/sign-up"
-                className="underline underline-offset-4"
-              >
-                Sign up
-              </Link>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+    <div className="bg-white text-[#1e2a32]">
+      <div className="space-y-5">
+        <div className="space-y-2">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-[#3b4a54]"
+          >
+            Correo electrónico
+          </label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (fieldErrors.email) {
+                setFieldErrors((prev) => ({ ...prev, email: undefined }));
+              }
+            }}
+            className={`h-12 w-full rounded-full bg-[#f0f2f5] border px-4 text-[#1e2a32] placeholder:text-[#8696a0] focus:outline-none transition-colors ${fieldErrors.email
+                ? "border-[#d93025] focus:border-[#d93025] focus:ring-1 focus:ring-[#f38ea1]"
+                : "border-[#d1d7db] focus:border-[#25d366] focus:ring-1 focus:ring-[#25d366]"
+              }`}
+          />
+          {fieldErrors.email && (
+            <p className="text-xs text-[#d93025]">{fieldErrors.email}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-[#3b4a54]"
+            >
+              Contraseña
+            </label>
+            <a
+              href="/auth/forgot-password"
+              className="text-xs font-medium text-[#00a884] hover:underline"
+            >
+              ¿Olvidaste tu contraseña?
+            </a>
+          </div>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (fieldErrors.password) {
+                setFieldErrors((prev) => ({ ...prev, password: undefined }));
+              }
+            }}
+            className={`h-12 w-full rounded-full bg-[#f0f2f5] border px-4 text-[#1e2a32] placeholder:text-[#8696a0] focus:outline-none transition-colors ${fieldErrors.password
+                ? "border-[#d93025] focus:border-[#d93025] focus:ring-1 focus:ring-[#f38ea1]"
+                : "border-[#d1d7db] focus:border-[#25d366] focus:ring-1 focus:ring-[#25d366]"
+              }`}
+          />
+          {fieldErrors.password && (
+            <p className="text-xs text-[#d93025]">{fieldErrors.password}</p>
+          )}
+        </div>
+
+        {error && (
+          <p className="text-sm font-medium text-[#d93025]">{error}</p>
+        )}
+
+        <button
+          onClick={handleLogin}
+          className="h-12 w-full flex justify-center items-center gap-2 rounded-full border border-border  text-[15px] font-semibold bg-[#25D366] hover:bg-[#20b857] text-[#0a0a0a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={isLoading}
+        >
+          <Mail className="h-5 w-5" />
+          {isLoading ? "Iniciando..." : "Iniciar sesión"}
+        </button>
+      </div>
+
+      <div className="my-6 flex items-center gap-3">
+        <span className="h-px flex-1 bg-[#e5eaec]" />
+        <span className="text-xs uppercase tracking-wide text-[#8696a0]">o continúa con</span>
+        <span className="h-px flex-1 bg-[#e5eaec]" />
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <button
+          onClick={() => handleOAuthLogin("google")}
+          className="h-12 w-full rounded-full border border-[#d1d7db] bg-white text-[#3b4a54] hover:bg-[#f0f2f5] transition-colors flex items-center justify-center gap-3 font-medium"
+        >
+          <Google className="w-6 h-6" />
+          Continuar con Google
+        </button>
+
+        <button
+          onClick={() => handleOAuthLogin("github")}
+          className="h-12 w-full rounded-full border border-[#d1d7db] bg-white text-[#3b4a54] hover:bg-[#f0f2f5] transition-colors flex items-center justify-center gap-3 font-medium"
+        >
+          <GitHub className="fill-[1b1f23] w-6 h-6" />
+          Continuar con GitHub
+        </button>
+      </div>
     </div>
   );
 }

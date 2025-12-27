@@ -1,60 +1,231 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin 'tailwindcss-animate';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: var(--font-roboto), var(--font-whatsapp-sans);
+  --font-whatsapp: var(--font-whatsapp-sans);
+  --font-serif: var(--font-whatsapp-serif);
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --color-whatsapp-overlay: var(--wa-overlay);
+  --color-whatsapp-panel: var(--wa-panel);
+  --color-whatsapp-blue: var(--wa-blue);
+  --color-whatsapp-peach: var(--wa-peach);
+  --color-whatsapp-olive: var(--wa-olive);
+  --color-whatsapp-forest: var(--wa-forest);
+  --color-whatsapp-deepForest: var(--wa-deep-forest);
+  --color-whatsapp-deep-forest: var(--wa-deep-forest);
+  --color-whatsapp-charcoal: var(--wa-charcoal);
+  --color-whatsapp-charcoalStrong: var(--wa-charcoal-strong);
+  --color-whatsapp-charcoal-strong: var(--wa-charcoal-strong);
+  --color-whatsapp-charcoalDeep: var(--wa-charcoal-deep);
+  --color-whatsapp-charcoal-deep: var(--wa-charcoal-deep);
+  --color-whatsapp-carbon: var(--wa-carbon);
+  --color-whatsapp-glass: var(--wa-glass);
+
+  --color-whatsapp-text-muted: var(--wa-text-muted);
+  --color-whatsapp-text-primary: var(--wa-text-primary);
+  --color-whatsapp-text-subtle: var(--wa-text-subtle);
+  --color-whatsapp-text-mint: var(--wa-text-mint);
+  --color-whatsapp-text-blue: var(--wa-text-blue);
+  --color-whatsapp-text-peach: var(--wa-text-peach);
+  --color-whatsapp-text-lime: var(--wa-text-lime);
+  --color-whatsapp-text-green: var(--wa-text-green);
+  --color-whatsapp-text-sky: var(--wa-text-sky);
+  --color-whatsapp-text-pink: var(--wa-text-pink);
+  --color-whatsapp-text-gray: var(--wa-text-gray);
+  --color-whatsapp-text-charcoal: var(--wa-text-charcoal);
+  --color-whatsapp-text-ebony: var(--wa-text-ebony);
+  --color-whatsapp-text-black: var(--wa-text-black);
+
+  --color-whatsapp-fill-ivory: var(--wa-fill-ivory);
+  --color-whatsapp-fill-white: var(--wa-fill-white);
+  --color-whatsapp-fill-subtle: var(--wa-fill-subtle);
+  --color-whatsapp-fill-navy: var(--wa-fill-navy);
+  --color-whatsapp-fill-mint: var(--wa-fill-mint);
+  --color-whatsapp-fill-blue: var(--wa-fill-blue);
+  --color-whatsapp-fill-charcoal: var(--wa-fill-charcoal);
+  --color-whatsapp-fill-black: var(--wa-fill-black);
+
+  --color-whatsapp-border-soft: var(--wa-border-soft);
+  --color-whatsapp-border-strong: var(--wa-border-strong);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --background: 0 0% 98%;
+    --foreground: 0 0% 7%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card-foreground: 0 0% 7%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
+    --popover-foreground: 0 0% 7%;
+    --primary: 180 88% 40%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
+    --secondary: 140 62% 47%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 35%;
+    --accent: 0 0% 94%;
+    --accent-foreground: 0 0% 7%;
+    --destructive: 0 84% 52%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 180 88% 40%;
+    --chart-1: 180 88% 40%;
+    --chart-2: 151 70% 45%;
+    --chart-3: 38 90% 55%;
+    --chart-4: 95 53% 33%;
+    --chart-5: 11 93% 60%;
     --radius: 0.5rem;
+
+    --font-whatsapp-sans: "Roboto Variable", "Segoe UI", "Helvetica Neue",
+      Helvetica, "Lucida Grande", Arial, Ubuntu, Cantarell, "Fira Sans",
+      sans-serif;
+    --font-whatsapp-serif: "Times New Roman", Times, serif;
+
+    /* WhatsApp-inspired palette */
+    --wa-overlay: #0000000d;
+    --wa-panel: #ffffff;
+    --wa-blue: #53bdeb;
+    --wa-peach: #fc9775;
+    --wa-olive: #a5b337;
+    --wa-forest: #144d37;
+    --wa-deep-forest: #103529;
+    --wa-charcoal: #f0f2f5;
+    --wa-charcoal-strong: #e9edef;
+    --wa-charcoal-deep: #ffffff;
+    --wa-carbon: #ffffff;
+    --wa-glass: #0000000d;
+
+    --wa-text-muted: #808080;
+    --wa-text-primary: #0a0a0a;
+    --wa-text-subtle: #242626;
+    --wa-text-mint: #15603E;
+    --wa-text-blue: #53bdeb;
+    --wa-text-peach: #fc9775;
+    --wa-text-lime: #a5b337;
+    --wa-text-green: #21c063;
+    --wa-text-sky: #53a6fd;
+    --wa-text-pink: #e26ab6;
+    --wa-text-gray: #808080;
+    --wa-text-charcoal: #242626;
+    --wa-text-ebony: #0a0a0a;
+    --wa-text-black: #000000;
+
+    --wa-fill-ivory: #fcfcfd;
+    --wa-fill-white: #ffffff;
+    --wa-fill-subtle: #fafafa;
+    --wa-fill-navy: #264367;
+    --wa-fill-mint: #25d366;
+    --wa-fill-blue: #53bdeb;
+    --wa-fill-charcoal: #242626;
+    --wa-fill-black: #000000;
+
+    --wa-border-soft: #0000000d;
+    --wa-border-strong: #00000033;
   }
   .dark {
-    --background: 0 0% 3.9%;
+    --background: 0 0% 7%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
+    --card: 0 0% 10%;
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
+    --popover: 0 0% 6%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --primary: 180 88% 58%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 140 62% 47%;
+    --secondary-foreground: 0 0% 7%;
+    --muted: 150 10% 27%;
+    --muted-foreground: 0 0% 85%;
+    --accent: 23 95% 72%;
+    --accent-foreground: 0 0% 7%;
+    --destructive: 0 84% 52%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 180 88% 58%;
+    --chart-1: 180 88% 58%;
+    --chart-2: 151 70% 53%;
+    --chart-3: 38 90% 64%;
+    --chart-4: 95 53% 33%;
+    --chart-5: 11 93% 72%;
+
+    --wa-overlay: #ffffff0d;
+    --wa-panel: #ffffff1a;
+    --wa-charcoal: #242626;
+    --wa-charcoal-strong: #262524;
+    --wa-charcoal-deep: #1d1f1f;
+    --wa-carbon: #161717;
+    --wa-glass: #00000033;
+
+    --wa-text-muted: #ffffff99;
+    --wa-text-primary: #ffffff;
+    --wa-text-subtle: #fafafa;
+
+    --wa-border-soft: #ffffff1a;
+    --wa-border-strong: #161717;
+
+    --wa-text-mint: #d9fdd3;
+
   }
 }
 
