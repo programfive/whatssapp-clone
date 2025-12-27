@@ -71,14 +71,6 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 └── supabase/          # Migraciones de base de datos y configuración
 ```
 
-## 📸 Capturas de Pantalla
+## Licencia
 
-El diseño ha sido cuidadosamente elaborado para imitar el aspecto premium de WhatsApp Web:
-
-| Chats & Filtros | Chat Window (Dark Mode) |
-| :--- | :--- |
-| ![Filters](./public/mockup.png) | Ver mockup superior |
-
----
-
-Desarrollado con ❤️ para demostrar el poder de **Next.js** + **Supabase**.
+Proyecto personal / educativo. Ajusta la licencia según tus necesidades.
