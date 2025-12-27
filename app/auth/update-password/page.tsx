@@ -1,7 +1,5 @@
-import { AuthenticationShell } from "@/components/whatsapp/authentication-shell";
+import { UpdatePasswordForm } from "@/components/update-password-form";
 
-export default function Page() {
-  return (
-    <AuthenticationShell mode="update-password" />
-  );
+export default function UpdatePasswordPage() {
+  return <UpdatePasswordForm />;
 }

@@ -964,7 +964,7 @@ export function StatusViewer({
                   </div>
                 </div>
                 <div className="space-y-2 max-w-md">
-                  <p className="text-xl font-bold tracking-tight drop-shadow-md">Audio de estado</p>
+                  <p className="text-xl font-semibold tracking-tight drop-shadow-md">Audio de estado</p>
                   <p className="text-sm opacity-60 line-clamp-1">{currentStatus?.caption ?? "Sin título"}</p>
                 </div>
                 <audio
@@ -1082,7 +1082,7 @@ export function StatusViewer({
                 <Eye className="h-5 w-5" />
                 <span>{currentStatus?.status_views?.length || 0}</span>
               </div>
-              <span className="text-[10px] uppercase font-bold tracking-widest opacity-60">Vistas</span>
+              <span className="text-[10px] uppercase font-semibold tracking-widest opacity-60">Vistas</span>
             </button>
           </div>
         )}
@@ -1163,20 +1163,20 @@ function DeleteConfirmationDialog({
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4">
       <div className="w-full max-w-[450px] rounded-xl bg-white p-8 dark:bg-[#161717] text-center animate-in fade-in zoom-in-95 duration-200">
-        <h3 className="text-xl font-bold text-whatsapp-text-primary">¿Eliminar actualización?</h3>
+        <h3 className="text-xl font-semibold text-whatsapp-text-primary">¿Eliminar actualización?</h3>
         <p className="mt-4 text-[15px] leading-relaxed text-[#8696a0]">
           Esta actualización de estado también se eliminará para todos los que la vieron. Solo eliminarás el fragmento seleccionado.
         </p>
-        <div className="mt-8 flex items-center justify-end px-2 gap-4">
+        <div className="mt-8 flex flex-col-reverse md:flex-row items-center justify-end px-2 gap-4">
           <button
             onClick={onClose}
-            className="px-8 py-3 rounded-full hover:bg-[#F7F5F3] font-semibold dark:hover:bg-whatsapp-panel dark:hover:text-white transition-colors hover:opacity-80 active:scale-95"
+            className="px-8 w-full md:w-fit py-3 rounded-full hover:bg-[#F7F5F3] font-semibold dark:hover:bg-whatsapp-panel dark:hover:text-white transition-colors hover:opacity-80 active:scale-95"
           >
             Cancelar
           </button>
           <button
             onClick={onConfirm}
-            className="rounded-full bg-[#f15c6d] px-8 py-3 font-semibold text-white transition hover:opacity-90 active:scale-[0.98] shadow-md"
+            className="rounded-full   w-full md:w-fit bg-[#f15c6d] px-8 py-3 font-semibold text-white transition hover:opacity-90 active:scale-[0.98] shadow-md"
           >
             Eliminar para todos
           </button>
@@ -1227,11 +1227,11 @@ function StatusComposerDialog({
   const title = mode === "text" ? "Nuevo estado de texto" : "Nuevo estado";
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-      <div className="w-full max-w-lg overflow-hidden rounded-[32px] bg-white shadow-2xl dark:bg-[#222e35]">
+    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60  px-4">
+      <div className="w-full max-w-lg overflow-hidden rounded-[32px] bg-white shadow-2xl dark:bg-[#161717]">
         <div className="px-8 pt-8 pb-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-whatsapp-text-primary">{title}</h2>
+            <h2 className="text-xl font-semibold text-whatsapp-text-primary">{title}</h2>
             <button
               type="button"
               onClick={onClose}
@@ -1269,7 +1269,7 @@ function StatusComposerDialog({
                       <div className="grid h-20 w-20 place-items-center rounded-full bg-whatsapp-forest text-white shadow-lg">
                         <Music className="h-10 w-10" />
                       </div>
-                      <p className="text-sm font-bold opacity-80">{file?.name}</p>
+                      <p className="text-sm font-semibold opacity-80">{file?.name}</p>
                       <audio src={previewUrl} controls className="w-full max-w-[240px]" />
                     </div>
                   ) : (
@@ -1296,7 +1296,7 @@ function StatusComposerDialog({
           <button
             type="button"
             onClick={onClose}
-            className="order-2 sm:order-1 px-6 py-2.5 text-sm font-bold text-whatsapp-forest hover:bg-whatsapp-forest/5 rounded-full transition-colors"
+            className="order-2 sm:order-1 px-6 py-2.5 text-sm font-semibold dark:text-white hover:bg-[#F7F5F3] text-whatsapp-text-muted  dark:hover:bg-whatsapp-panel rounded-full transition-colors"
           >
             Cancelar
           </button>
@@ -1305,7 +1305,7 @@ function StatusComposerDialog({
             disabled={isSubmitting}
             onClick={onSubmit}
             className={cn(
-              "order-1 sm:order-2 inline-flex items-center justify-center gap-2 rounded-full px-8 py-2.5 text-sm font-bold text-white transition-all shadow-md",
+              "order-1 sm:order-2 inline-flex items-center justify-center gap-2 rounded-full px-8 py-2.5 text-sm font-semibold text-white transition-all shadow-md",
               isSubmitting
                 ? "bg-whatsapp-forest opacity-70 cursor-not-allowed"
                 : "bg-whatsapp-forest hover:bg-whatsapp-forest-dark active:scale-[0.98]"

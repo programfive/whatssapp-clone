@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { IconSidebar } from "./icon-sidebar";
 import { ChatListPanel } from "./chat-list-panel";
@@ -15,7 +16,6 @@ import type { ChatPreview } from "./types";
 import { Clock, Clock1, Clock10, Download, Lock } from "lucide-react";
 import { MessageHome } from "../icons/message-home";
 import { WallpaperModal, type WallpaperOption } from "./wallpaper-modal";
-import { AuthenticationShell } from "./authentication-shell";
 
 type ChatSummaryRow = {
   conversation_id: string;
@@ -1083,8 +1083,16 @@ export function WhatsAppHomeShell() {
       .eq("id", userId);
   }, [userId]);
 
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoadingChats && !userId) {
+      router.push('/auth/login');
+    }
+  }, [isLoadingChats, userId, router]);
+
   if (!isLoadingChats && !userId) {
-    return <AuthenticationShell mode="login" />;
+    return null; // Will redirect
   }
 
   return (

@@ -1,7 +1,5 @@
-import { AuthenticationShell } from "@/components/whatsapp/authentication-shell";
+import { ForgotPasswordForm } from "@/components/forgot-password-form";
 
-export default function Page() {
-  return (
-    <AuthenticationShell mode="forgot-password" />
-  );
+export default function ForgotPasswordPage() {
+  return <ForgotPasswordForm />;
 }

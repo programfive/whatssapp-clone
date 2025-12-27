@@ -1,5 +1,5 @@
-import { AuthenticationShell } from "@/components/whatsapp/authentication-shell";
+import { LoginForm } from "@/components/login-form";
 
-export default function Page() {
-  return <AuthenticationShell />;
+export default function LoginPage() {
+  return <LoginForm />;
 }

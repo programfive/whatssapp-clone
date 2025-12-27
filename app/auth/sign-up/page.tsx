@@ -1,5 +1,5 @@
-import { AuthenticationShell } from "@/components/whatsapp/authentication-shell";
+import { SignUpForm } from "@/components/sign-up-form";
 
-export default function Page() {
-  return <AuthenticationShell mode="signup" />;
+export default function SignUpPage() {
+  return <SignUpForm />;
 }

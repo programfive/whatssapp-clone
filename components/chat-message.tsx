@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
-import { type FC, useMemo, useState } from 'react'
+import { type FC, useEffect, useMemo, useState } from 'react'
 
 import { cn } from '@/lib/utils'
 import type { ChatMessage } from '@/hooks/use-realtime-chat'
@@ -16,6 +16,9 @@ import { PollMessageCard, type PollPayload } from '@/components/poll-message-car
 import { LinkifiedText } from '@/components/linkified-text'
 import { MessageReactionPicker } from '@/components/whatsapp/message-reaction-picker'
 import { MessageReactions } from '@/components/whatsapp/message-reactions'
+
+const VIDEO_EXT_REGEX = /\.(mp4|mov|webm|mkv|avi)(\?.*)?$/i
+const IMAGE_EXT_REGEX = /\.(jpe?g|png|gif|webp|avif|bmp)(\?.*)?$/i
 
 function parsePollPayload(content: string | null | undefined): PollPayload | null {
   if (!content) return null
@@ -56,6 +59,15 @@ function PollResponsePreview({ payload, isOwnMessage }: { payload: PollPayload; 
       </div>
     </div>
   )
+}
+
+const detectStatusMediaType = (typeValue: string | null | undefined, url: string | null | undefined) => {
+  const normalized = (typeValue ?? '').toLowerCase()
+  if (normalized === 'video' || normalized === 'image') return normalized
+  if (!url) return null
+  if (VIDEO_EXT_REGEX.test(url)) return 'video'
+  if (IMAGE_EXT_REGEX.test(url)) return 'image'
+  return null
 }
 
 interface ChatMessageItemProps {
@@ -100,6 +112,16 @@ export const ChatMessageItem: FC<ChatMessageItemProps> = ({
       console.warn("Error parsing status_reply content", e)
     }
   }
+  const statusContext = statusData?.statusContext ?? null
+  const statusContextMediaUrl = statusContext?.mediaUrl ?? statusContext?.media_url ?? null
+  const statusContextType = detectStatusMediaType(statusContext?.type, statusContextMediaUrl)
+  const isStatusContextVideo = statusContextType === 'video'
+  const isStatusContextImage = statusContextType === 'image'
+  const [statusPreviewError, setStatusPreviewError] = useState(false)
+
+  useEffect(() => {
+    setStatusPreviewError(false)
+  }, [statusContextMediaUrl])
 
   const isSystem = (message.messageType ?? '').trim().toLowerCase() === 'system'
   const isPrivateSystem = isSystem && (message.content || '').startsWith('Vaciaste el chat')
@@ -280,27 +302,69 @@ export const ChatMessageItem: FC<ChatMessageItemProps> = ({
             <div className="mb-0.5 pr-12 text-xs font-semibold text-whatsapp-text-green">{message.user.name}</div>
           ) : null}
 
-          {isStatusReply && statusData?.statusContext && (
+          {isStatusReply && statusContext && (
             <div className="mb-2 rounded-lg bg-black/10 dark:bg-black/20 p-2 border-l-4 border-l-[#00a884] overflow-hidden min-w-[200px]">
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="font-bold text-[#00a884] text-[11px] mb-0.5 truncate">
-                    {statusData.statusContext.name} · Estados
+                    {statusContext.name} · Estados
                   </div>
                   <div className="flex items-center gap-1.5 text-xs opacity-70 truncate">
-                    {statusData.statusContext.type === 'video' ? (
+                    {isStatusContextVideo ? (
                       <Video className="h-3 w-3 shrink-0" />
-                    ) : statusData.statusContext.type === 'image' ? (
+                    ) : isStatusContextImage ? (
                       <Camera className="h-3 w-3 shrink-0" />
                     ) : (
                       <FileText className="h-3 w-3 shrink-0" />
                     )}
-                    <span className="truncate">{statusData.statusContext.caption}</span>
+                    <span className="truncate">{statusContext.caption}</span>
                   </div>
                 </div>
-                {statusData.statusContext.mediaUrl && (
-                  <div className="h-10 w-10 shrink-0 overflow-hidden rounded bg-black/10">
-                    <img src={statusData.statusContext.mediaUrl} alt="" className="h-full w-full object-cover" />
+                {(statusContextMediaUrl && !statusPreviewError) ? (
+                  <div
+                    className={cn(
+                      "shrink-0 overflow-hidden rounded bg-black/10 relative",
+                      isStatusContextVideo ? "h-12 w-12" : "h-10 w-10"
+                    )}
+                  >
+                    {isStatusContextVideo ? (
+                      <>
+                        <video
+                          src={statusContextMediaUrl}
+                          muted
+                          loop
+                          playsInline
+                          preload="metadata"
+                          className="h-full w-full object-cover"
+                          onError={() => setStatusPreviewError(true)}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                          <Play className="h-4 w-4 text-white fill-white" />
+                        </div>
+                      </>
+                    ) : (
+                      <img
+                        src={statusContextMediaUrl}
+                        alt=""
+                        className="h-full w-full object-cover"
+                        onError={() => setStatusPreviewError(true)}
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <div
+                    className={cn(
+                      "shrink-0 overflow-hidden rounded bg-gradient-to-br from-black/20 via-black/10 to-black/30 text-white/80 flex items-center justify-center",
+                      isStatusContextVideo ? "h-12 w-12" : "h-10 w-10"
+                    )}
+                  >
+                    {isStatusContextVideo ? (
+                      <Video className="h-4 w-4" />
+                    ) : isStatusContextImage ? (
+                      <ImageIcon className="h-4 w-4" />
+                    ) : (
+                      <FileText className="h-4 w-4" />
+                    )}
                   </div>
                 )}
               </div>

@@ -1,0 +1,7 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /protected/
+
+Sitemap: https://web.whatsapp.com/sitemap.xml
