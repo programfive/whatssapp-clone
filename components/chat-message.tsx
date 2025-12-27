@@ -1,4 +1,4 @@
-import { Check, CheckCheck, Download, FileText, Play, Smile, Reply, Forward, ChevronDown, Video, Camera, Star, Trash2, Link, MapPin, MessageCircle, Phone, SquarePen, User2 } from 'lucide-react'
+import { Check, CheckCheck, Download, FileText, Play, Smile, Reply, Forward, ChevronDown, Video, Camera, Star, Trash2, Link, MapPin, MessageCircle, Phone, SquarePen, User2, Image } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -361,7 +361,7 @@ export const ChatMessageItem: FC<ChatMessageItemProps> = ({
                     {isStatusContextVideo ? (
                       <Video className="h-4 w-4" />
                     ) : isStatusContextImage ? (
-                      <ImageIcon className="h-4 w-4" />
+                      <Image className="h-4 w-4" />
                     ) : (
                       <FileText className="h-4 w-4" />
                     )}
